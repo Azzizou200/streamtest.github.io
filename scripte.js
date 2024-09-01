@@ -5,6 +5,7 @@ let constraintObj = {
 const start = document.querySelector("#start")
 const stopRecode = document.querySelector("#stop")
 const video = document.querySelector("#live-feed")
+const record = document.querySelector("#replay")
 
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -34,7 +35,7 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         video.play()
     }
 
-}) 
+
   const mediaRecorder = new MediaRecorder(mediaStreamObj)
 
   start.addEventListener("click",()=>{
@@ -45,11 +46,19 @@ if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   })
   let chunk = []
   mediaRecorder.ondataavailable = (e) =>{
-    chunk.puch(e.data)
+    chunk.push(e.data)
   }
   stopRecode.addEventListener("click",()=>{
-    mediaRecorder.stop
+    mediaRecorder.stop()
     console.log("reconding stop")
+    
+
   })
-  
+  mediaRecorder.onstop = () => {
+    let blob = new Blob(chunk, {'type' : 'video/mp4;'})
+    chunk = []
+    let videoUrl = window.URL.createObjectURL(blob)
+    record.src = videoUrl
+  }
+  }) 
     
